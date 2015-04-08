@@ -263,7 +263,7 @@ Meteor.methods({
 
       var team = findTeam(teamId);
       if (!team || !team.inProgressEstimation){
-        console.log('Cannot confirm vote for teamId = ' + teamId + '. No team found or team not currently estimating. team = ', team)
+        console.log('Cannot cancel vote for teamId = ' + teamId + '. No team found or team not currently estimating. team = ', team)
         return false;
       }
 
