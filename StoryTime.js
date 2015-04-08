@@ -64,7 +64,7 @@ Teams = new Mongo.Collection('Teams');
     if (!teamId){
       return null;
     }
-    return Teams.find({ _id: teamId });
+    return Teams.findOne({ _id: teamId });
   }
 
   // Converts a list of TeamMembers to a list of MemberVotes
@@ -131,12 +131,12 @@ Meteor.methods({
 
       var team = findTeam(teamId);
       if (!team || team.inProgressEstimation){
+        console.log('Cannot start new estimation for teamId = ' + teamId + '. No team found or team is currently estimating. team = ', team)
         return false;
       }
 
       var estimation = new Estimation({
-        units: team.estimationUnits,
-        members: team.members
+        units: team.estimationUnits
       });
 
       Teams.update(
@@ -151,6 +151,7 @@ Meteor.methods({
 
       var team = findTeam(teamId);
       if (!team || !team.inProgressEstimation){
+        console.log('Cannot join estimation for teamId = ' + teamId + '. No team found or team not currently estimating. team = ', team)
         return false;
       }
 
@@ -166,7 +167,8 @@ Meteor.methods({
 
       var team = findTeam(teamId);
       if (!team || !team.inProgressEstimation){
-        return;
+        console.log('Cannot leave estimation for teamId = ' + teamId + '. No team found or team not currently estimating. team = ', team)
+        return false;
       }
 
       Teams.update(
@@ -183,7 +185,8 @@ Meteor.methods({
 
       var team = findTeam(teamId);
       if (!team || !team.inProgressEstimation){
-        return;
+        console.log('Cannot start new estimation vote for teamId = ' + teamId + '. No team found or team not currently estimating. team = ', team)
+        return false;
       }
 
       var newTeamVote = new TeamVote({
@@ -203,6 +206,7 @@ Meteor.methods({
 
       var team = findTeam(teamId);
       if (!team || !team.inProgressEstimation){
+        console.log('Cannot confirm member vote for teamId = ' + teamId + '. No team found or team not currently estimating. team = ', team)
         return false;
       }
 
@@ -253,6 +257,18 @@ if (Meteor.isClient) {
     });
   // </Template.body>
 
+  // <Template.currentEstimation>
+    Template.currentEstimation.helpers({
+
+    });
+
+    Template.currentEstimation.events({
+      'click .leaveEstimation': function(event){
+        Meteor.call('leaveEstimation', this._id);
+      }
+    });
+  // </Template.currentEstimation>
+
   // <Template.estimationsInProgress>
     Template.estimationsInProgress.helpers({
       yourTeamsThatAreEstimating: function(){
@@ -271,10 +287,10 @@ if (Meteor.isClient) {
 
     Template.estimationsInProgress.events({
       'click .joinEstimation': function(event){
-        Meteor.call('joinEstimation', $(event.target).data('id'));
+        Meteor.call('joinEstimation', this._id);
       },
       'click .startNewEstimation': function(event){
-        Meteor.call('startNewEstimation', $(event.target).data('id'));
+        Meteor.call('startNewEstimation', this._id);
       }
     });
   // </Template.estimationsInProgress>
@@ -319,10 +335,10 @@ if (Meteor.isClient) {
         return false;
       },
       'click .joinTeam': function(event){
-        Meteor.call('joinTeam', $(event.target).data('id'));
+        Meteor.call('joinTeam', this._id);
       },
       'click .leaveTeam': function(event){
-        Meteor.call('leaveTeam', $(event.target).data('id'));
+        Meteor.call('leaveTeam', this._id);
       }
     });
   // </Template.teams>

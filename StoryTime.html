@@ -41,6 +41,7 @@
     {{> votingWidget}}
     {{> estimationHistory}}
   {{/with}}
+  <button class="leaveEstimation">Leave Estimation</button>
 </template>
 
 <template name="votingWidget">
@@ -81,7 +82,7 @@
       {{#each yourTeamsThatAreEstimating}}
         <li>
           <span>{{name}}</span>
-          <button class="joinEstimation" data-id="{{_id}}">Join</button>
+          <button class="joinEstimation">Join</button>
         </li>
       {{/each}}
     </ul>
@@ -90,7 +91,7 @@
       {{#each yourTeamsThatAreNotEstimating}}
         <li>
           <span>{{name}}</span>
-          <button class="startNewEstimation" data-id="{{_id}}">Start New Estimation</button>
+          <button class="startNewEstimation">Start New Estimation</button>
         </li>
       {{/each}}
     </ul>
@@ -127,7 +128,7 @@
           {{#each yourTeams}}
             <li>
               <span>{{name}}</span>
-              <button class="leaveTeam" data-id="{{_id}}">Leave</button>
+              <button class="leaveTeam">Leave</button>
             </li>
           {{/each}}
         </ul>
@@ -138,7 +139,7 @@
           {{#each otherTeams}}
             <li>
               <span>{{name}}</span>
-              <button class="joinTeam" data-id="{{_id}}">Join</button>
+              <button class="joinTeam">Join</button>
             </li>
           {{/each}}
         </ul>
