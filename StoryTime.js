@@ -2,6 +2,7 @@ Teams = new Mongo.Collection('Teams');
 
 // <models>
   function Team(options){
+    options = options || {};
     return {
       name: options.name,
       description: options.description,
@@ -22,11 +23,12 @@ Teams = new Mongo.Collection('Teams');
       name: options.name
     } : {
       id: Meteor.userId(),
-      name: Meteor.user().username
+      name: getUserName()
     };
   }
 
   function Story(options){
+    options = options || {};
     return {
       name: options.name,
       link: options.link,
@@ -35,6 +37,7 @@ Teams = new Mongo.Collection('Teams');
   }
 
   function Estimation(options){
+    options = options || {};
     options.story = options.story || new Story();
     return {
       result: options.result,
@@ -48,6 +51,7 @@ Teams = new Mongo.Collection('Teams');
   }
 
   function TeamVote(options){
+    options = options || {};
     return {
       memberVotes: options.memberVotes || [],
       number: options.number,
@@ -56,6 +60,7 @@ Teams = new Mongo.Collection('Teams');
   }
 
   function MemberVote(options){
+    options = options || {};
     return {
       member: options.member,
       vote: options.vote
@@ -64,6 +69,15 @@ Teams = new Mongo.Collection('Teams');
 // </models>
 
 // <helpers>
+  function getUserName(){
+    var user = Meteor.user();
+    if (!user){
+      return null;
+    }
+    // accounts-ui or account-google
+    return user.username || user.profile.name;
+  }
+
   function findTeam(teamId){
     if (!teamId){
       return null;
@@ -218,7 +232,7 @@ Meteor.methods({
 
       Teams.update(
         { _id: teamId },
-        { $set: { 'inProgressEstimation.teamVotes': newTeamVote } });
+        { $set: { 'inProgressEstimation.currentVote': newTeamVote } });
       return true;
     },
     confirmMemberVote: function(teamId, vote){
@@ -286,7 +300,10 @@ if (Meteor.isClient) {
 
   // <Template.currentEstimation>
     Template.currentEstimation.helpers({
-
+      voteByMember: function(context){
+        console.log(context);
+        return [];
+      }
     });
 
     Template.currentEstimation.events({
@@ -301,6 +318,9 @@ if (Meteor.isClient) {
       },
       'click .leaveEstimation': function(event){
         Meteor.call('leaveEstimation', this._id);
+      },
+      'click .startNewEstimationVote': function(event){
+        Meteor.call('startNewEstimationVote', this._id);
       }
     });
   // </Template.currentEstimation>

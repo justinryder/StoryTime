@@ -55,6 +55,7 @@
 </template>
 
 <template name="estimationHistory">
+  <button class="startNewEstimationVote">Start New Vote</button>
   <table>
     <thead>
       <tr>
@@ -62,12 +63,18 @@
         {{#each votes}}
           <td>Vote {{number}}</td>
         {{/each}}
+        {{#if currentVote}}
+          <td>Vote {{currentVote.number}}</td>
+        {{/if}}
       </tr>
     </thead>
     <tbody>
       {{#each members}}
         <tr>
           <td>{{name}}</td>
+          {{#each voteByMember}}
+            <td>{{vote}}</td>
+          {{/each}}
         </tr>
       {{/each}}
     </tbody>
