@@ -1,0 +1,87 @@
+<head>
+  <title>Story Time</title>
+</head>
+
+<body>
+  {{> loginButtons}}
+
+  {{#if currentUser}}  
+    {{> estimationsInProgress}}
+    {{> recentEstimations}}
+    {{> teams}}
+  {{/if}}
+</body>
+
+<template name="estimationsInProgress">
+  <section class="estimationsInProgress">
+    <h1>Estimations</h1>
+    <h2>In Progress</h2>
+    <ul>
+      {{#each yourTeamsThatAreEstimating}}
+        <li>
+          <span>{{name}}</span>
+          <button class="joinEstimation" data-id="{{_id}}">Join</button>
+        </li>
+      {{/each}}
+    </ul>
+    <h2>Ready for New Estimation</h2>
+    <ul>
+      {{#each yourTeamsThatAreNotEstimating}}
+        <li>
+          <span>{{name}}</span>
+          <button class="startNewEstimation" data-id="{{_id}}">Start New Estimation</button>
+        </li>
+      {{/each}}
+    </ul>
+  </section>
+</template>
+
+<template name="recentEstimations">
+  <section class="recentEstimations">
+    <h1>Recent Estimations</h1>
+  </section>
+</template>
+
+<template name="teams">
+  <section class="teams">
+    {{#if isAddingNewTeam}}
+      <form class="addNewTeamForm">
+        <h1>Add New team</h1>
+        <input required type="text" name="name" placeholder="Name"/>
+        <input type="text" name="description" placeholder="Description"/>
+        <select required name="estimationUnits">
+          <option value="Story Points">Story Points</option>
+          <option value="Hours">Hours</option>
+          <option value="Other">Other</option>
+        </select>
+        <button type="submit" class="submitNewTeamButton">Create New Team</button>
+        <button class="cancelButton">Cancel</button>
+      </form>
+    {{else}}
+      <h1>Teams</h1>
+      <button class="addNewTeamButton">Add New Team</button>
+      <section class="yourTeams">
+        <h1>Your Teams</h1>
+        <ul>
+          {{#each yourTeams}}
+            <li>
+              <span>{{name}}</span>
+              <button class="leaveTeam" data-id="{{_id}}">Leave</button>
+            </li>
+          {{/each}}
+        </ul>
+      </section>
+      <section class="otherTeams">
+        <h1>Other Teams</h1>
+        <ul>
+          {{#each otherTeams}}
+            <li>
+              <span>{{name}}</span>
+              <button class="joinTeam" data-id="{{_id}}">Join</button>
+            </li>
+          {{/each}}
+        </ul>
+      </section>
+    {{/if}}
+  </section>
+</template>
