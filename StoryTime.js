@@ -38,14 +38,15 @@ Teams = new Mongo.Collection('Teams');
       },
       // Who is actually participating right now
       members: options.members || [],
-      inProgressVotes: options.inProgressVotes || [],
-      completedVotes: options.completedVotes || []
+      teamVotes: options.teamVotes || [],
+      currentVote: options.currentVote || null
     };
   }
 
-  function CompletedVote(options){
+  function TeamVote(options){
     return {
-      memberVotes: options.memberVotes,
+      memberVotes: options.memberVotes || [],
+      number: options.number,
       dateIn: new Date()
     };
   }
@@ -58,81 +59,159 @@ Teams = new Mongo.Collection('Teams');
   }
 // </models>
 
-Meteor.methods({
-  addNewTeam: function(team){
-    if (!Meteor.user()){
-      return;
-    }
-
-    var newTeam = new Team(team);
-    newTeam.members.push(new TeamMember());
-    Teams.insert(newTeam);
-  },
-  joinTeam: function(teamId){
-    if (!Meteor.user() || !teamId){
-      return;
-    }
-
-    Teams.update(
-      { _id: teamId },
-      { $push: { members: new TeamMember() } });
-  },
-  leaveTeam: function(teamId){
-    if (!Meteor.user() || !teamId){
-      return;
-    }
-
-    Teams.update(
-      { _id: teamId },
-      { $pull: { members: { id: Meteor.userId() } } });
-  },
-  startNewEstimation: function(teamId){
+// <helpers>
+  function findTeam(teamId){
     if (!teamId){
-      return;
+      return null;
     }
-
-    var team = Teams.find({ _id: teamId, inProgressEstimation: null });
-    if (!team){
-      return;
-    }
-
-    var estimation = new Estimation({
-      units: team.estimationUnits,
-      members: [ new TeamMember() ]
-    });
-
-    Teams.update(
-      { _id: teamId, inProgressEstimation: null },
-      { $set: { inProgressEstimation: estimation } });
-  },
-  joinEstimation: function(teamId){
-    if (!teamId){
-      return;
-    }
-
-    var team = Teams.find({ _id: teamId, inProgressEstimation: { $ne: null } });
-    if (!team){
-      return;
-    }
-
-    Teams.update(
-      { _id: teamId }
-      { $push: { 'inProgressEstimation.members': new TeamMember() } });
-  },
-  leaveEstimation: function(teamId){
-    if (!teamId){
-      return;
-    }
-
-    var team = Teams.find({ _id: teamId, inProgressEstimation: { $ne: null } });
-    if (!team){
-      return;
-    }
-
-    Teams.update(
-      { _id: teamId },
-      { $pull: { 'inProgressEstimation.members': { id: Meteor.userId() } } });
+    return Teams.find({ _id: teamId });
   }
+
+  // Converts a list of TeamMembers to a list of MemberVotes
+  function teamMembersToMemberVotes(team){
+    var members = team.members;
+    var memberVotes = [];
+    for (var i = 0; i < members.length; i++){
+      memberVotes.push(new MemberVote({
+        member: members[i]
+      }));
+    }
+    return memberVotes;
+  }
+// </helpers>
+
+Meteor.methods({
+  // <teams>
+    addNewTeam: function(team){
+      if (!Meteor.user()){
+        return false;
+      }
+
+      var newTeam = new Team(team);
+      newTeam.members.push(new TeamMember());
+      Teams.insert(newTeam);
+      return true;
+    },
+    joinTeam: function(teamId){
+      if (!Meteor.user()){
+        return false;
+      }
+
+      var team = findTeam(teamId);
+      if (!team || team.inProgressEstimation) {
+        return false;
+      }
+
+      Teams.update(
+        { _id: teamId },
+        { $push: { members: new TeamMember() } });
+      return true;
+    },
+    leaveTeam: function(teamId){
+      if (!Meteor.user()){
+        return false;
+      }
+
+      var team = findTeam(teamId);
+      if (!team || team.inProgressEstimation){
+        return false;
+      }
+
+      Teams.update(
+        { _id: teamId },
+        { $pull: { members: { id: Meteor.userId() } } });
+      return true;
+    },
+  // </teams>
+  // <estimations>
+    startNewEstimation: function(teamId){
+      if (!Meteor.user()){
+        return false;
+      }
+
+      var team = findTeam(teamId);
+      if (!team || team.inProgressEstimation){
+        return false;
+      }
+
+      var estimation = new Estimation({
+        units: team.estimationUnits,
+        members: team.members
+      });
+
+      Teams.update(
+        { _id: teamId, inProgressEstimation: null },
+        { $set: { inProgressEstimation: estimation } });
+      return true;
+    },
+    joinEstimation: function(teamId){
+      if (!Meteor.user()){
+        return false;
+      }
+
+      var team = findTeam(teamId);
+      if (!team || !team.inProgressEstimation){
+        return false;
+      }
+
+      Teams.update(
+        { _id: teamId },
+        { $push: { 'inProgressEstimation.members': new TeamMember() } });
+      return true;
+    },
+    leaveEstimation: function(teamId){
+      if (!Meteor.user()){
+        return false;
+      }
+
+      var team = findTeam(teamId);
+      if (!team || !team.inProgressEstimation){
+        return;
+      }
+
+      Teams.update(
+        { _id: teamId },
+        { $pull: { 'inProgressEstimation.members': { id: Meteor.userId() } } });
+      return true;
+    },
+  // </estimations>
+  // <votes>
+    startNewEstimationVote: function(teamId){
+      if (!Meteor.user()){
+        return false;
+      }
+
+      var team = findTeam(teamId);
+      if (!team || !team.inProgressEstimation){
+        return;
+      }
+
+      var newTeamVote = new TeamVote({
+        memberVotes: teamMembersToMemberVotes(team.members),
+        number: team.inProgressEstimation.teamVotes.length
+      });
+
+      Teams.update(
+        { _id: teamId },
+        { $set: { 'inProgressEstimation.teamVotes': newTeamVote } });
+      return true;
+    },
+    confirmMemberVote: function(teamId, vote){
+      if (!Meteor.user()){
+        return false;
+      }
+
+      var team = findTeam(teamId);
+      if (!team || !team.inProgressEstimation){
+        return false;
+      }
+
+      Teams.update(
+        { _id: teamId, 'inProgressEstimation.currentVote.memberVotes.member.id': Meteor.userId() },
+        { $set: { 'inProgressEstimation.currentVote.memberVotes.$.member.vote': vote } });
+      return true;
+    }
+  // </votes>
 });
 
 // <session data>
@@ -149,7 +228,6 @@ Meteor.methods({
   }
 
   var isAddingNewItem = _sessionGetSetFactory('isAddingNewTeam');
-  var estimatingForTeam = _sessionGetSetFactory('estimatingForTeam');
 // </session data>
 
 if (Meteor.isClient) {
@@ -159,75 +237,95 @@ if (Meteor.isClient) {
     passwordSignupFields: "USERNAME_ONLY"
   });
 
-  Template.estimationsInProgress.helpers({
-    yourTeamsThatAreEstimating: function(){
-      return Teams.find({
-        members: { $elemMatch: { id: Meteor.userId() } },
-        inProgressEstimation: { $ne: null }
-      });
-    },
-    yourTeamsThatAreNotEstimating: function(){
-      return Teams.find({
-        members: { $elemMatch: { id: Meteor.userId() } },
-        inProgressEstimation: null
-      });
-    }
-  });
+  // <Template.body>
+    Template.body.helpers({
+      // The team that you are currently estimating with
+      currentEstimationTeam: function(){
+        return Teams.findOne({
+          members: { $elemMatch: { id: Meteor.userId() } },
+          'inProgressEstimation.members': { $elemMatch: { id: Meteor.userId() }}
+        });
+      }
+    });
 
-  Template.estimationsInProgress.events({
-    'click .joinEstimation': function(event){
-      Meteor.call('joinEstimation', $(event.target).data('id'));
-    },
-    'click .startNewEstimation': function(event){
-      Meteor.call('startNewEstimation', $(event.target).data('id'));
-    }
-  });
+    Template.body.events({
 
-  Template.teams.helpers({
-    isAddingNewTeam: function(){
-      return isAddingNewItem();
-    },
-    yourTeams: function(){
-      return Teams.find({ members: { $elemMatch: { id: Meteor.userId() } } });
-    },
-    otherTeams: function(){
-      return Teams.find({
-        $where: function(){
-          for (var i = 0; i < this.members.length; i++){
-            if (this.members[i].id == Meteor.userId()){
-              return false;
+    });
+  // </Template.body>
+
+  // <Template.estimationsInProgress>
+    Template.estimationsInProgress.helpers({
+      yourTeamsThatAreEstimating: function(){
+        return Teams.find({
+          members: { $elemMatch: { id: Meteor.userId() } },
+          inProgressEstimation: { $ne: null }
+        });
+      },
+      yourTeamsThatAreNotEstimating: function(){
+        return Teams.find({
+          members: { $elemMatch: { id: Meteor.userId() } },
+          inProgressEstimation: null
+        });
+      }
+    });
+
+    Template.estimationsInProgress.events({
+      'click .joinEstimation': function(event){
+        Meteor.call('joinEstimation', $(event.target).data('id'));
+      },
+      'click .startNewEstimation': function(event){
+        Meteor.call('startNewEstimation', $(event.target).data('id'));
+      }
+    });
+  // </Template.estimationsInProgress>
+
+  // <Template.teams>
+    Template.teams.helpers({
+      isAddingNewTeam: function(){
+        return isAddingNewItem();
+      },
+      yourTeams: function(){
+        return Teams.find({ members: { $elemMatch: { id: Meteor.userId() } } });
+      },
+      otherTeams: function(){
+        return Teams.find({
+          $where: function(){
+            for (var i = 0; i < this.members.length; i++){
+              if (this.members[i].id == Meteor.userId()){
+                return false;
+              }
             }
+            return true;
           }
-          return true;
-        }
-      });
-    }
-  });
+        });
+      }
+    });
 
-  Template.teams.events({
-    'click .addNewTeamButton': function(event){
-      isAddingNewItem(true);
-    },
-    'click .addNewTeamForm .cancelButton': function(event){
-      isAddingNewItem(false);
-    },
-    'submit .addNewTeamForm': function(event){
-      var team = new Team({
-        name: event.target.name.value,
-        description : event.target.description.value,
-        estimationUnits: event.target.estimationUnits.value
-      });
-      Meteor.call('addNewTeam', team);
-      isAddingNewItem(false);
-      return false;
-    },
-    'click .joinTeam': function(event){
-      Meteor.call('joinTeam', $(event.target).data('id'));
-    },
-    'click .leaveTeam': function(event){
-      Meteor.call('leaveTeam', $(event.target).data('id'));
-    }
-  });
+    Template.teams.events({
+      'click .addNewTeamButton': function(event){
+        isAddingNewItem(true);
+      },
+      'click .addNewTeamForm .cancelButton': function(event){
+        isAddingNewItem(false);
+      },
+      'submit .addNewTeamForm': function(event){
+        var team = new Team({
+          name: event.target.name.value,
+          description : event.target.description.value,
+          estimationUnits: event.target.estimationUnits.value
+        });
+        Meteor.call('addNewTeam', team);
+        isAddingNewItem(false);
+        return false;
+      },
+      'click .joinTeam': function(event){
+        Meteor.call('joinTeam', $(event.target).data('id'));
+      },
+      'click .leaveTeam': function(event){
+        Meteor.call('leaveTeam', $(event.target).data('id'));
+      }
+    });
+  // </Template.teams>
 }
 
 if (Meteor.isServer) {

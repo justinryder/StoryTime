@@ -5,12 +5,73 @@
 <body>
   {{> loginButtons}}
 
-  {{#if currentUser}}  
-    {{> estimationsInProgress}}
-    {{> recentEstimations}}
-    {{> teams}}
+  {{#if currentUser}}
+    {{#if currentEstimationTeam}}
+      {{#with currentEstimationTeam}}
+        {{> currentEstimation}}
+      {{/with}}
+    {{else}}
+      {{> estimationsInProgress}}
+      {{> recentEstimations}}
+      {{> teams}}
+    {{/if}}
   {{/if}}
 </body>
+
+<template name="currentEstimation">
+  {{#with inProgressEstimation}}
+    <form class="storyForm">
+      <h1>
+        <span>Story</span>
+        {{#if result}}
+          <span>{{result}}</span>
+        {{else}}
+          <span>?</span>
+        {{/if}}
+        <span> </span>
+        <span>{{units}}</span>
+      </h1>
+      {{#with story}}
+        <input required type="text" name="name" placeholder="Name" value="{{name}}"/>
+        <input type="text" name="link" placeholder="Link" value="{{link}}"/>
+        <input type="text" name="description" placeholder="Description" value="{{description}}"/>
+      {{/with}}
+      <button type="submit" class="saveStory">Save</button>
+    </form>
+    {{> votingWidget}}
+    {{> estimationHistory}}
+  {{/with}}
+</template>
+
+<template name="votingWidget">
+  <section class="votingWidget">
+    <h1>Your Vote</h1>
+    <form class="votingForm">
+      <input type="text" placeholder="Vote Here" name="vote" value="{{vote}}"/>
+      <button type="submit">Confirm</button>
+    </form>
+  </section>
+</template>
+
+<template name="estimationHistory">
+  <table>
+    <thead>
+      <tr>
+        <td>Team Members</td>
+        {{#each votes}}
+          <td>Vote {{number}}</td>
+        {{/each}}
+      </tr>
+    </thead>
+    <tbody>
+      {{#each members}}
+        <tr>
+          <td>{{name}}</td>
+        </tr>
+      {{/each}}
+    </tbody>
+  </table>
+</template>
 
 <template name="estimationsInProgress">
   <section class="estimationsInProgress">
