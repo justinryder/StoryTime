@@ -26,16 +26,20 @@ Teams = new Mongo.Collection('Teams');
     };
   }
 
+  function Story(options){
+    return {
+      name: options.name,
+      link: options.link,
+      description: options.description
+    };
+  }
+
   function Estimation(options){
-    options.story = options.story || {};
+    options.story = options.story || new Story();
     return {
       result: options.result,
       units: options.units,
-      story: {
-        name: options.story.name,
-        link: options.story.link,
-        description: options.story.description
-      },
+      story: new Story(options.story),
       // Who is actually participating right now
       members: options.members || [],
       teamVotes: options.teamVotes || [],
@@ -176,6 +180,24 @@ Meteor.methods({
         { $pull: { 'inProgressEstimation.members': { id: Meteor.userId() } } });
       return true;
     },
+    updateStory: function(teamId, story){
+      if (!Meteor.userId()){
+        return false;
+      }
+
+      var team = findTeam(teamId);
+      if (!team || !team.inProgressEstimation){
+        console.log('Cannot update story for teamId = ' + teamId + '. No team found or team not currently estimating. team = ', team)
+        return false;
+      }
+
+      var newStory = new Story(story);
+
+      Teams.update(
+        { _id: teamId },
+        { $set: { 'inProgressEstimation.story': newStory } });
+      return true;
+    },
   // </estimations>
   // <votes>
     startNewEstimationVote: function(teamId){
@@ -245,10 +267,15 @@ if (Meteor.isClient) {
     Template.body.helpers({
       // The team that you are currently estimating with
       currentEstimationTeam: function(){
-        return Teams.findOne({
+        var team = Teams.findOne({
           members: { $elemMatch: { id: Meteor.userId() } },
           'inProgressEstimation.members': { $elemMatch: { id: Meteor.userId() }}
         });
+        if (team){
+          // Add parent reference to make update story call easier
+          team.inProgressEstimation.parent = team;
+        }
+        return team;
       }
     });
 
@@ -263,6 +290,15 @@ if (Meteor.isClient) {
     });
 
     Template.currentEstimation.events({
+      'submit .storyForm': function(event){
+        var story = new Story({
+          name: event.target.name.value,
+          link: event.target.link.value,
+          description: event.target.description.value
+        });
+        Meteor.call('updateStory', this.parent._id, story);
+        return false;
+      },
       'click .leaveEstimation': function(event){
         Meteor.call('leaveEstimation', this._id);
       }
