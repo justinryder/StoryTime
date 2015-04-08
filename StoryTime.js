@@ -54,7 +54,15 @@ Teams = new Mongo.Collection('Teams');
       member: options.member,
       isParticipating: false,
       votes: [],
-      currentVote: null
+      currentVote: options.currentVote || new Vote()
+    };
+  }
+
+  function Vote(options){
+    options = options || {};
+    return {
+      value: options.value,
+      confirmed: options.confirmed || false
     };
   }
 // </models>
@@ -83,6 +91,18 @@ Teams = new Mongo.Collection('Teams');
       }
     }
     return false;
+  }
+
+  function findTeamYouAreCurrentlyEstimatingWith(){
+    var team = Teams.findOne({
+      'inProgressEstimation.memberVotes.member.id': Meteor.userId(),
+      'inProgressEstimation.memberVotes.isParticipating': true
+    });
+    if (team){
+      // Add parent reference to make Meteor.calls easier
+      team.inProgressEstimation.parent = team;
+    }
+    return team;
   }
 
   // Converts a list of TeamMembers to a list of MemberVotes
@@ -212,8 +232,48 @@ Meteor.methods({
         { _id: teamId },
         { $set: { 'inProgressEstimation.story': newStory } });
       return true;
-    }
+    },
   // </estimations>
+  // <votes>
+    confirmVote: function(teamId, voteValue){
+      if (!Meteor.user()){
+        return false;
+      }
+
+      var team = findTeam(teamId);
+      if (!team || !team.inProgressEstimation){
+        console.log('Cannot confirm vote for teamId = ' + teamId + '. No team found or team not currently estimating. team = ', team)
+        return false;
+      }
+
+      var newVote = new Vote({
+        value: voteValue,
+        confirmed: true
+      });
+
+      Teams.update(
+        { _id: teamId, 'inProgressEstimation.memberVotes.member.id': Meteor.userId() },
+        { $set: { 'inProgressEstimation.memberVotes.$.currentVote': newVote } });
+      return true;
+    },
+    cancelVote: function(teamId){
+      if (!Meteor.user()){
+        return false;
+      }
+
+      var team = findTeam(teamId);
+      if (!team || !team.inProgressEstimation){
+        console.log('Cannot confirm vote for teamId = ' + teamId + '. No team found or team not currently estimating. team = ', team)
+        return false;
+      }
+
+      // TODO: Figure out why it works in Robomongo, but not in the app, even with the same exact query.
+      Teams.update(
+        { _id: teamId, 'inProgressEstimation.memberVotes.member.id': Meteor.userId() },
+        { $set: { 'inProgressEstimation.memberVotes.$.currentVote.confirmed': false } });
+      return true;
+    }
+  // </votes>
 });
 
 // <session data>
@@ -241,18 +301,7 @@ if (Meteor.isClient) {
 
   // <Template.body>
     Template.body.helpers({
-      // The team that you are currently estimating with
-      currentEstimationTeam: function(){
-        var team = Teams.findOne({
-          'inProgressEstimation.memberVotes.member.id': Meteor.userId(),
-          'inProgressEstimation.memberVotes.isParticipating': true
-        });
-        if (team){
-          // Add parent reference to make update story call easier
-          team.inProgressEstimation.parent = team;
-        }
-        return team;
-      }
+      currentEstimationTeam: findTeamYouAreCurrentlyEstimatingWith
     });
 
     Template.body.events({
@@ -260,12 +309,32 @@ if (Meteor.isClient) {
     });
   // </Template.body>
 
+  // <Template.votingWidget>
+    Template.votingWidget.helpers({
+      yourCurrentVote: function(){
+        var team = findTeamYouAreCurrentlyEstimatingWith();
+        for (var i = 0; i < team.inProgressEstimation.memberVotes.length; i++){
+          if (team.inProgressEstimation.memberVotes[i].member.id == Meteor.userId()){
+            return team.inProgressEstimation.memberVotes[i].currentVote;
+          }
+        }
+      }
+    });
+
+    Template.votingWidget.events({
+      'submit .votingForm': function(event){
+        Meteor.call('confirmVote', this.parent._id, event.target.vote.value);
+        return false;
+      },
+      'click .cancelCurrentVote': function(event){
+        Meteor.call('cancelVote', this.parent._id);
+      }
+    });
+  // </Template.votingWidget>
+
   // <Template.currentEstimation>
     Template.currentEstimation.helpers({
-      voteByMember: function(context){
-        console.log(context);
-        return [];
-      }
+
     });
 
     Template.currentEstimation.events({
@@ -286,6 +355,24 @@ if (Meteor.isClient) {
       }
     });
   // </Template.currentEstimation>
+
+  // <Template.estimationHistory>
+    Template.estimationHistory.helpers({
+      voteCount: function(context){
+        var count = 0;
+        for (var i = 0; i < this.memberVotes.length; i++){
+          if (this.memberVotes[i].votes.length > count) {
+            count = this.memberVotes[i].votes.length;
+          }
+        }
+        return count + 1; // Add 1 for currentVote
+      }
+    });
+
+    Template.estimationHistory.events({
+
+    });
+  // </Template.estimationHistory>
 
   // <Template.estimationsInProgress>
     Template.estimationsInProgress.helpers({
