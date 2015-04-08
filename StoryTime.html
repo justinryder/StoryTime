@@ -89,6 +89,10 @@
       {{#each yourTeamsThatAreEstimating}}
         <li>
           <span>{{name}}</span>
+          {{#if inProgressEstimation.story.name}}
+            <span> is estimating </span>
+            <span>{{inProgressEstimation.story.name}}</span>
+          {{/if}}
           <button class="joinEstimation">Join</button>
         </li>
       {{/each}}
