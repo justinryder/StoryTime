@@ -153,7 +153,7 @@
         </li>
       {{/each}}
     </ul>
-    <h1>Not Estimating</h1>
+    <h1>Teams Not Estimating</h1>
     <ul>
       {{#each yourTeamsThatAreNotEstimating}}
         <li>
@@ -168,6 +168,19 @@
 <template name="recentEstimations">
   <section class="recentEstimations widget">
     <h1>Recent Estimations</h1>
+    <ul>
+      {{#each recentEstimations}}
+        <li>
+          <span>{{team.name}}</span>
+          <span> - </span>
+          <span>{{story.name}}</span>
+          <span> - </span>
+          <span>{{result}}</span>
+          <span> </span>
+          <span>{{units}}</span>
+        </li>
+      {{/each}}
+    </ul>
   </section>
 </template>
 

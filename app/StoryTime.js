@@ -230,6 +230,7 @@ Meteor.methods({
         return false;
       }
 
+      team.inProgressEstimation.dateIn = new Date();
       team.completedEstimations.push(team.inProgressEstimation);
       team.inProgressEstimation = null;
 
@@ -416,7 +417,12 @@ if (Meteor.isClient) {
         Meteor.call('startNewEstimationVote', this._id);
       },
       'click .finalizeEstimation': function(event){
-        Meteor.call('finalizeEstimation', this._id);
+        if (this.inProgressEstimation.story.name) {
+          Meteor.call('finalizeEstimation', this._id);
+        }
+        else {
+          alert('Please enter a story name before finalizing the vote.');
+        }
       }
     });
   // </Template.currentEstimation>
@@ -474,6 +480,29 @@ if (Meteor.isClient) {
       }
     });
   // </Template.estimationsInProgress>
+
+  // <Template.recentEstimations>
+    Template.recentEstimations.helpers({
+      recentEstimations: function(){
+        var teams = Teams.find();
+        var estimations = [];
+        teams.forEach(function(team){
+          team.completedEstimations.forEach(function(estimation){
+            estimation.team = team;
+          });
+          Array.prototype.push.apply(estimations, team.completedEstimations);
+        });
+        estimations.sort(function(a, b){
+          return b.dateIn - a.dateIn;
+        });
+        return estimations.slice(0, 5);
+      }
+    });
+
+    Template.recentEstimations.events({
+      
+    });
+  // </Tempalte.recentEstimations>
 
   // <Template.teams>
     Template.teams.helpers({
