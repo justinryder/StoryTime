@@ -1,3 +1,4 @@
 app/.meteor/local
 app/.meteor/meteorite
+app/*.css
 .sass-cache
