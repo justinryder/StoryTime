@@ -27,17 +27,17 @@
 </body>
 
 <template name="currentEstimation">
+  {{#if allParticipantsAgreedOnLastVote}}
+    <button class="finalizeEstimation button currentEstimationButton">Finalize Estimation</button>
+  {{/if}}
   <section class="currentEstimation">
     {{#with inProgressEstimation}}
       {{> estimationHistory}}
       {{> storyForm}}
       {{> votingWidget}}
     {{/with}}
-    {{#if allParticipantsAgreedOnLastVote}}
-      <button class="finalizeEstimation button">Finalize Estimation</button>
-    {{/if}}
-    <button class="leaveEstimation button">Leave Estimation</button>
   </section>
+  <button class="leaveEstimation button currentEstimationButton">Leave Estimation</button>
 </template>
 
 <template name="storyForm">
@@ -63,7 +63,7 @@
       <label for="link">Link</label>
       <input class="input" type="text" name="link" placeholder="Link" value="{{link}}"/>
     {{/with}}
-    <button type="submit" class="saveStory button">Save</button>
+    <button type="submit" class="saveStory button">Save Story</button>
   </form>
 </template>
 
@@ -106,7 +106,7 @@
       {{/if}}
     </h1>
     {{#if allParticipantsHaveConfirmedTheirVotes}}
-      <button class="showVotes">Show Votes</button>
+      <button class="showVotes button">Show Votes</button>
     {{/if}}
     <table>
       <thead>

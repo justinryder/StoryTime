@@ -1,0 +1,20 @@
+.storyForm {
+  label {
+    text-transform: uppercase;
+    font-weight: bold;
+    margin-top: 1%;
+  }
+
+  label,
+  input,
+  textarea {
+    display: block;
+    width: 100%;
+    margin-bottom: 1%;
+  }
+
+  .saveStory {
+    display: block;
+    margin: 2% auto 0;
+  }
+}

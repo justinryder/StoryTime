@@ -19,20 +19,18 @@
 
 .storyForm {
   width: 48%;
-
-  label {
-    text-transform: uppercase;
-    font-weight: bold;
-  }
-
-  label,
-  input,
-  textarea {
-    display: block;
-    width: 100%;
-  }
 }
 
 .votingWidget {
   width: 48%;
+}
+
+.currentEstimationButton,
+.showVotes {
+  display: block;
+  margin: auto;
+}
+
+.showVotes {
+  margin-bottom: 1%;
 }
