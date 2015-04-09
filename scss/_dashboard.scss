@@ -43,12 +43,19 @@ ul{
   .input{
     width: 100%;
   }
+
+  li {
+    padding-bottom: .5em;
+
+    &:last-child {
+      padding-bottom: 0;
+    }
+  }
 }
 
 
 .yourTeams{
-  border-bottom-style: outset;
-  border-bottom-size: 2 px;
+  border-bottom: $border;
   padding-bottom: $mainWidgetMargin;
 }
 
@@ -75,11 +82,11 @@ ul{
     text-align: center;
   }
 
-  .addNewTeamForm  {
-    width: $mainWidgetWidth;
-    border-radius: 3px;
-    box-shadow: 0px 0px 5px #888888;
-    border-width: 5px;
-    float: left;
+  li {
+    padding-bottom: .5em;
+
+    &:last-child {
+      padding-bottom: 0;
+    }
   }
 }
