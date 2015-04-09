@@ -114,8 +114,7 @@
 
 <template name="estimationsInProgress">
   <section class="estimationsInProgress">
-    <h1>Estimations</h1>
-    <h2>In Progress</h2>
+    <h1>Estimations in Progress</h1>
     <ul>
       {{#each yourTeamsThatAreEstimating}}
         <li>
@@ -163,7 +162,6 @@
       </form>
     {{else}}
       <h1>Teams</h1>
-      <button class="addNewTeamButton">Add New Team</button>
       <section class="yourTeams">
         <h1>Your Teams</h1>
         <ul>
@@ -174,6 +172,7 @@
             </li>
           {{/each}}
         </ul>
+        <button class="addNewTeamButton">Create New Team</button>
       </section>
       <section class="otherTeams">
         <h1>Other Teams</h1>

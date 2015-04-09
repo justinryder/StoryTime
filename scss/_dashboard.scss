@@ -1,0 +1,85 @@
+
+$mainWidgetWidth: 30%;
+$mainWidgetMargin:#{(100% - ($mainWidgetWidth * 3)) / 4};
+$widgetPaddingTB: 1%;
+$widgetPaddingLR: 3%;
+$widgetPadding: $widgetPaddingTB $widgetPaddingLR;
+
+header{
+  background-color: white;
+  width: 100%;
+  background-image: url("images/StoryTime_Logo.png");
+  background-size: 40%;
+  height: 180px;
+  background-repeat: no-repeat;
+  text-align: right;
+}
+ul{
+  list-style-type: none;
+}
+
+.content
+{
+  padding:$widgetPadding;  
+  height: 75%;
+}
+
+.teams{
+  padding: $widgetPadding;
+  margin-right: $mainWidgetMargin;
+  margin-top: $mainWidgetMargin;
+  margin-bottom: $mainWidgetMargin;
+  width: $mainWidgetWidth;
+  padding-bottom: $mainWidgetMargin;
+  border-radius: 3px;
+  box-shadow: 0px 0px 5px #888888;
+  border-width: 5px;
+  float: left;
+
+  h1{
+    text-align: center;
+  }
+
+  .addNewTeamButton{
+    display: block;
+    width: 125px;
+    margin-right: auto;
+    margin-left: auto;
+  }
+}
+
+
+.yourTeams{
+  border-bottom-style: outset;
+  border-bottom-size: 2 px;
+  padding-bottom: $mainWidgetMargin;
+}
+
+.recentEstimations{
+  padding: $widgetPadding;
+  margin-right: $mainWidgetMargin;
+  margin-top: $mainWidgetMargin;
+  margin-bottom: $mainWidgetMargin;
+  width: $mainWidgetWidth;
+  border-radius: 3px;
+  box-shadow: 0px 0px 5px #888888;
+  border-width: 5px;
+  float: left;
+
+  h1{
+    text-align: center;
+  }
+}
+
+.estimationsInProgress{
+  margin: $mainWidgetMargin;
+  width: $mainWidgetWidth;
+  border-radius: 3px;
+  box-shadow: 0px 0px 5px #888888;
+  border-width: 5px;
+  float: left;
+
+  h1{
+    text-align: center;
+  }
+}
