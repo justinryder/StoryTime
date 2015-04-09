@@ -1,6 +1,5 @@
 
-$mainWidgetWidth: 30%;
-$mainWidgetMargin:#{(100% - ($mainWidgetWidth * 3)) / 4};
+$mainWidgetWidth: 32%;
 $widgetPaddingTB: 1%;
 $widgetPaddingLR: 3%;
 $widgetPadding: $widgetPaddingTB $widgetPaddingLR;
@@ -16,16 +15,10 @@ ul{
   width: 100%;
 }
 
+
+
 .teams{
-  padding: $widgetPadding;
-  margin-right: $mainWidgetMargin;
-  margin-top: $mainWidgetMargin;
-  margin-bottom: $mainWidgetMargin;
   width: $mainWidgetWidth;
-  padding-bottom: $mainWidgetMargin;
-  border-radius: 3px;
-  box-shadow: 0px 0px 5px #888888;
-  border-width: 5px;
   float: left;
 
   h1{
@@ -48,10 +41,6 @@ ul{
 }
 
 .recentEstimations{
-  padding: $widgetPadding;
-  margin-right: $mainWidgetMargin;
-  margin-top: $mainWidgetMargin;
-  margin-bottom: $mainWidgetMargin;
   width: $mainWidgetWidth;
   border-radius: 3px;
   box-shadow: 0px 0px 5px #888888;
@@ -64,7 +53,6 @@ ul{
 }
 
 .estimationsInProgress{
-  margin: $mainWidgetMargin;
   width: $mainWidgetWidth;
   border-radius: 3px;
   box-shadow: 0px 0px 5px #888888;
