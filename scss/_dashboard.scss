@@ -5,23 +5,15 @@ $widgetPaddingTB: 1%;
 $widgetPaddingLR: 3%;
 $widgetPadding: $widgetPaddingTB $widgetPaddingLR;
 
-header{
-  background-color: white;
-  width: 100%;
-  background-image: url("images/StoryTime_Logo.png");
-  background-size: 40%;
-  height: 180px;
-  background-repeat: no-repeat;
-  text-align: right;
-}
+
 ul{
   list-style-type: none;
 }
 
-.content
-{
+.content {
   padding:$widgetPadding;  
   height: 75%;
+  width: 100%;
 }
 
 .teams{

@@ -5,7 +5,9 @@
 
 <body>
   <header>
-    {{> loginButtons}}
+    {{#if currentUser}}
+      {{> loginButtons}}
+    {{/if}}
   </header>
   <div class="content">
     {{#if currentUser}}
@@ -18,6 +20,8 @@
         {{> recentEstimations}}
         {{> teams}}
       {{/if}}
+    {{else}}
+      {{> loginButtons}}
     {{/if}}
   </div>
 </body>
