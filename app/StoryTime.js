@@ -282,6 +282,28 @@ Meteor.methods({
         { _id: teamId, 'inProgressEstimation.memberVotes.member.id': Meteor.userId() },
         { $set: { 'inProgressEstimation.memberVotes.$.currentVote.confirmed': false } });
       return true;
+    },
+    showVotes: function(teamId){
+      if (!Meteor.user()){
+        return false;
+      }
+
+      var team = findTeam(teamId);
+      if (!team || !team.inProgressEstimation){
+        console.log('Cannot show votes for teamId = ' + teamId + '. No team found or team not currently estimating. team = ', team)
+        return false;
+      }
+
+      var memberVotes = team.inProgressEstimation.memberVotes;
+      memberVotes.forEach(function(memberVote){
+        memberVote.votes.push(memberVote.currentVote);
+        memberVote.currentVote = new Vote();
+      });
+
+      Teams.update(
+        { _id: teamId },
+        { $set: { 'inProgressEstimation.memberVotes': memberVotes } });
+      return true;
     }
   // </votes>
 });
@@ -368,7 +390,7 @@ if (Meteor.isClient) {
 
   // <Template.estimationHistory>
     Template.estimationHistory.helpers({
-      voteCount: function(context){
+      voteCount: function(){
         var count = 0;
         for (var i = 0; i < this.memberVotes.length; i++){
           if (this.memberVotes[i].votes.length > count) {
@@ -376,11 +398,21 @@ if (Meteor.isClient) {
           }
         }
         return count + 1; // Add 1 for currentVote
+      },
+      allParticipantsHaveConfirmedTheirVotes: function(){
+        for (var i = 0; i < this.memberVotes.length; i++){
+          if (this.memberVotes[i].isParticipating && !this.memberVotes[i].currentVote.confirmed){
+            return false;
+          }
+        }
+        return true;
       }
     });
 
     Template.estimationHistory.events({
-
+      'click .showVotes': function(event){
+        Meteor.call('showVotes', this.parent._id);
+      }
     });
   // </Template.estimationHistory>
 

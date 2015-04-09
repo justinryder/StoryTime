@@ -59,7 +59,9 @@
 </template>
 
 <template name="estimationHistory">
-  <button class="startNewEstimationVote">Start New Vote</button>
+  {{#if allParticipantsHaveConfirmedTheirVotes}}
+    <button class="showVotes">Show Votes</button>
+  {{/if}}
   <table>
     <thead>
       <tr>
