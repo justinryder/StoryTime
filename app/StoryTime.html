@@ -41,7 +41,7 @@
 </template>
 
 <template name="storyForm">
-  <form class="storyForm">
+  <form class="storyForm widget">
     <h1>
       <span>Story</span>
     </h1>
@@ -68,7 +68,7 @@
 </template>
 
 <template name="votingWidget">
-  <section class="votingWidget">
+  <section class="votingWidget widget">
     <h1>Your Vote</h1>
     <form class="votingForm">
       <input type="text" placeholder="Vote Here" name="vote" value="{{vote}}"/>
@@ -82,7 +82,7 @@
 </template>
 
 <template name="estimationHistory">
-  <section class="estimationHistory">
+  <section class="estimationHistory widget">
     <h1>
       <span>{{parent.name}}</span>
       <span> - </span>
@@ -126,7 +126,7 @@
 </template>
 
 <template name="estimationsInProgress">
-  <section class="estimationsInProgress">
+  <section class="estimationsInProgress widget">
     <h1>Estimations in Progress</h1>
     <ul>
       {{#each yourTeamsThatAreEstimating}}
@@ -153,13 +153,13 @@
 </template>
 
 <template name="recentEstimations">
-  <section class="recentEstimations">
+  <section class="recentEstimations widget">
     <h1>Recent Estimations</h1>
   </section>
 </template>
 
 <template name="teams">
-  <section class="teams">
+  <section class="teams widget">
     {{#if isAddingNewTeam}}
       <form class="addNewTeamForm">
         <h1>Add New team</h1>
