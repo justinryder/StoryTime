@@ -1,7 +1,11 @@
 .button {
-  padding: .75em 1em;
-  border-radius: 2px;
+  padding: 1% 2%;
+  border: $borderWidth solid $borderColor;
+  border-radius: $borderRadius;
 
   background-color: $primaryColor;
   color: white;
+
+  text-transform: uppercase;
+  font-weight: bold;
 }

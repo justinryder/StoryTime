@@ -34,9 +34,9 @@
       {{> votingWidget}}
     {{/with}}
     {{#if allParticipantsAgreedOnLastVote}}
-      <button class="finalizeEstimation">Finalize Estimation</button>
+      <button class="finalizeEstimation button">Finalize Estimation</button>
     {{/if}}
-    <button class="leaveEstimation">Leave Estimation</button>
+    <button class="leaveEstimation button">Leave Estimation</button>
   </section>
 </template>
 
@@ -45,7 +45,7 @@
     <h1>
       <span>Story</span>
     </h1>
-    <div class="result">
+    <p class="result">
       <span>Estimate: </span>
       {{#if result}}
         <span>{{result}}</span>
@@ -54,14 +54,14 @@
       {{/if}}
       <span> </span>
       <span>{{units}}</span>
-    </div>
+    </p>
     {{#with story}}
       <label for="name">Story Name</label>
-      <input required type="text" name="name" placeholder="Story Name" value="{{name}}"/>
+      <input required class="input" type="text" name="name" placeholder="Story Name" value="{{name}}"/>
       <label for="description">Description</label>
-      <textarea rows="5" name="description" placeholder="Description" value="{{description}}"></textarea>
+      <textarea class="input" rows="5" name="description" placeholder="Description" value="{{description}}"></textarea>
       <label for="link">Link</label>
-      <input type="text" name="link" placeholder="Link" value="{{link}}"/>
+      <input class="input" type="text" name="link" placeholder="Link" value="{{link}}"/>
     {{/with}}
     <button type="submit" class="saveStory button">Save</button>
   </form>
@@ -78,7 +78,7 @@
       {{/if}}
     </h1>
     <form class="votingForm">
-      <input type="text" placeholder="Enter a free-form vote and press [Enter]" name="vote"/>
+      <input class="input" type="text" placeholder="Enter a free-form vote and press [Enter]" name="vote"/>
     </form>
     <p>or use QuickVote&trade;</p>
     <div class="quickVote">
@@ -176,8 +176,8 @@
     {{#if isAddingNewTeam}}
       <form class="addNewTeamForm">
         <h1>Add New team</h1>
-        <input required type="text" name="name" placeholder="Name"/>
-        <input type="text" name="description" placeholder="Description"/>
+        <input required class="input" type="text" name="name" placeholder="Name"/>
+        <input class="input" type="text" name="description" placeholder="Description"/>
         <select required name="estimationUnits">
           <option value="Story Points">Story Points</option>
           <option value="Hours">Hours</option>

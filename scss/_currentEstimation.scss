@@ -20,6 +20,11 @@
 .storyForm {
   width: 48%;
 
+  label {
+    text-transform: uppercase;
+    font-weight: bold;
+  }
+
   label,
   input,
   textarea {
