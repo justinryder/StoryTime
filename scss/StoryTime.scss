@@ -1,4 +1,5 @@
 @import "config";
+@import "compass/utilities/general/clearfix";
 @import "currentEstimation";
 
 @font-face {
@@ -16,15 +17,18 @@
 }
 $mainWidgetWidth: 30%;
 $mainWidgetMargin:#{(100% - ($mainWidgetWidth * 3)) / 4};
+$widgetPadding: 10px;
 body{
   font-family: Open Sans;
   font-style: normal;
   font-size: 13px;
+  background-color: rgb(248,248,248);
 }
 
 header{
+  background-color: white;
   width: 100%;
-  height: auto;
+  height: 25%;
   background-image: url("images/StoryTime_Logo.png");
   background-size: 40%;
   background-repeat: no-repeat;
@@ -37,13 +41,18 @@ ul{
 
 .content
 {
-  background-color: rgb(248,248,248);
+  padding:$widgetPadding;
+  @include pie-clearfix();
+  
+  height: 75%;
 }
 .teams{
+  padding: $widgetPadding;
   margin-right: $mainWidgetMargin;
   margin-top: $mainWidgetMargin;
   margin-bottom: $mainWidgetMargin;
 	width: $mainWidgetWidth;
+  padding-bottom: $mainWidgetMargin;
   border-radius: 3px;
   box-shadow: 0px 0px 5px #888888;
   border-width: 5px;
@@ -53,10 +62,11 @@ ul{
 .yourTeams{
   border-bottom-style: outset;
   border-bottom-size: 2 px;
-
+  padding-bottom: $mainWidgetMargin;
 }
 
 .recentEstimations{
+  padding: $widgetPadding;
   margin-right: $mainWidgetMargin;
   margin-top: $mainWidgetMargin;
   margin-bottom: $mainWidgetMargin;
@@ -75,4 +85,7 @@ ul{
   border-width: 5px;
 	float: left;
 }
+
+
+
 

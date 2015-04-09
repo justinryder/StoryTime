@@ -7,19 +7,19 @@
   <header>
     {{> loginButtons}}
   </header>
- 
-
-  {{#if currentUser}}
-    {{#if currentEstimationTeam}}
-      {{#with currentEstimationTeam}}
-        {{> currentEstimation}}
-      {{/with}}
-    {{else}}
-      {{> estimationsInProgress}}
-      {{> recentEstimations}}
-      {{> teams}}
+  <div class="content">
+    {{#if currentUser}}
+      {{#if currentEstimationTeam}}
+        {{#with currentEstimationTeam}}
+          {{> currentEstimation}}
+        {{/with}}
+      {{else}}
+        {{> estimationsInProgress}}
+        {{> recentEstimations}}
+        {{> teams}}
+      {{/if}}
     {{/if}}
-  {{/if}}
+  </div>
 </body>
 
 <template name="currentEstimation">
