@@ -204,3 +204,13 @@ ul {
 .votingWidget {
   width: 50%;
 }
+
+/* line 2, ../scss/_votingWidget.scss */
+.votingWidget .quickVote {
+  width: 100%;
+}
+/* line 5, ../scss/_votingWidget.scss */
+.votingWidget .quickVote .button {
+  width: 3em;
+  margin: auto;
+}

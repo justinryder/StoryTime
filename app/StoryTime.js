@@ -375,6 +375,9 @@ if (Meteor.isClient) {
         Meteor.call('confirmVote', this.parent._id, event.target.vote.value);
         event.target.vote.value = null;
         return false;
+      },
+      'click .quickVote .button': function(event){
+        Meteor.call('confirmVote', this.parent._id, $(event.target).data('vote'));
       }
     });
   // </Template.votingWidget>
