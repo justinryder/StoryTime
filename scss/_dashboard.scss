@@ -26,6 +26,7 @@ ul{
     display: block;
     margin-right: auto;
     margin-left: auto;
+    padding: .5em;
   }
 
   .input,
@@ -36,6 +37,11 @@ ul{
     display: block;
     margin-right: auto;
     margin-left: auto;
+  }
+
+  .submitNewTeamButton,
+  .cancelButton{
+    padding: .5em;
   }
 
   select,
