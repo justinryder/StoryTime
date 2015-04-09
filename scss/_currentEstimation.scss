@@ -2,9 +2,7 @@
 .estimationHistory,
 .storyForm,
 .votingWidget {
-  border: 1px solid black;
   float: left;
-  padding: 1% 3%;
 
   h1 {
     text-align: center;
@@ -16,7 +14,7 @@
 }
 
 .estimationHistory {
-  width: 100%;
+  width: 98%;
 
   table {
     width: 100%;
@@ -52,7 +50,7 @@
 }
 
 .storyForm {
-  width: 50%;
+  width: 48%;
 
   label,
   input,
@@ -63,5 +61,5 @@
 }
 
 .votingWidget {
-  width: 50%;
+  width: 48%;
 }
