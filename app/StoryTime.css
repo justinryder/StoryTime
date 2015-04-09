@@ -5,7 +5,7 @@
   src: local("Open Sans Light"), local("OpenSans-Light"), url(http://fonts.gstatic.com/s/opensans/v10/DXI1ORHCpsQm3Vp6mXoaTSUUniRZcd_wq8DYmIfsw2A.woff2) format("woff2");
   unicode-range: U+0460-052F, U+20B4, U+2DE0-2DFF, U+A640-A69F;
 }
-/* line 10, ../scss/StoryTime.scss */
+/* line 11, ../scss/StoryTime.scss */
 * {
   -webkit-box-sizing: border-box;
   /* Safari 3.0 - 5.0, Chrome 1 - 9, Android 2.1 - 3.x */
@@ -14,54 +14,68 @@
   box-sizing: border-box;
 }
 
-/* line 17, ../scss/StoryTime.scss */
+/* line 19, ../scss/StoryTime.scss */
 body {
   text-align: center;
   font-family: Open Sans;
   font-style: normal;
   font-size: 13px;
+  background-color: #f8f8f8;
 }
 
-/* line 24, ../scss/StoryTime.scss */
+/* line 27, ../scss/StoryTime.scss */
 header {
+  background-color: white;
   width: 100%;
-  height: auto;
+  height: 25%;
   background-image: url("images/StoryTime_Logo.png");
   background-size: 40%;
   background-repeat: no-repeat;
   text-align: right;
 }
 
-/* line 33, ../scss/StoryTime.scss */
+/* line 37, ../scss/StoryTime.scss */
 ul {
   list-style-type: none;
 }
 
-/* line 37, ../scss/StoryTime.scss */
+/* line 41, ../scss/StoryTime.scss */
 .content {
-  background-color: #f8f8f8;
+  padding: 10px;
+  *zoom: 1;
+  height: 75%;
+}
+/* line 38, ../../../../../../Ruby22-x64/lib/ruby/gems/2.2.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/general/_clearfix.scss */
+.content:after {
+  content: "";
+  display: table;
+  clear: both;
 }
 
-/* line 41, ../scss/StoryTime.scss */
+/* line 48, ../scss/StoryTime.scss */
 .teams {
+  padding: 10px;
   margin-right: 2.5%;
   margin-top: 2.5%;
   margin-bottom: 2.5%;
   width: 30%;
+  padding-bottom: 2.5%;
   border-radius: 3px;
   box-shadow: 0px 0px 5px #888888;
   border-width: 5px;
   float: left;
 }
 
-/* line 52, ../scss/StoryTime.scss */
+/* line 61, ../scss/StoryTime.scss */
 .yourTeams {
   border-bottom-style: outset;
   border-bottom-size: 2 px;
+  padding-bottom: 2.5%;
 }
 
-/* line 58, ../scss/StoryTime.scss */
+/* line 67, ../scss/StoryTime.scss */
 .recentEstimations {
+  padding: 10px;
   margin-right: 2.5%;
   margin-top: 2.5%;
   margin-bottom: 2.5%;
@@ -72,7 +86,7 @@ ul {
   float: left;
 }
 
-/* line 69, ../scss/StoryTime.scss */
+/* line 79, ../scss/StoryTime.scss */
 .estimationsInProgress {
   margin: 2.5%;
   width: 30%;
