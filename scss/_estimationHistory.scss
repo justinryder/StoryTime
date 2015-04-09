@@ -21,7 +21,7 @@
     thead td {
       border-top: none;
       text-transform: uppercase;
-      font-weight: bold;
+      font-weight: 400;
     }
 
     tbody tr:last-child td {
@@ -31,5 +31,10 @@
     td:not(:first-child) {
       text-align: center;
     }
+  }
+
+  .is-not-participating {
+    color: red;
+    text-decoration: line-throug;
   }
 }
