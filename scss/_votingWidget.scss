@@ -1,10 +1,22 @@
 .votingWidget {
+  p {
+    text-align: center;
+  }
+
   .quickVote {
     width: 100%;
 
     .button {
-      width: 3em;
+      width: calc(95% / 7);
       margin: auto;
+    }
+  }
+
+  .votingForm {
+    input {
+      display: block;
+      width: 100%;
+      text-align: center;
     }
   }
 }

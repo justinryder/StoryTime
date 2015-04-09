@@ -69,15 +69,18 @@
 
 <template name="votingWidget">
   <section class="votingWidget widget">
-    <h1>Your Vote</h1>
-    <form class="votingForm">
-      <input type="text" placeholder="Vote Here" name="vote" value="{{vote}}"/>
+    <h1>
+      <span>Your Vote: </span>
       {{#if yourCurrentVote.confirmed}}
-        <button type="submit" class="button">I Changed My Mind!</button>
+        <span>{{yourCurrentVote.value}}</span>
       {{else}}
-        <button type="submit" class="button">Confirm</button>
+        <span>?</span>
       {{/if}}
+    </h1>
+    <form class="votingForm">
+      <input type="text" placeholder="Enter a free-form vote and press [Enter]" name="vote"/>
     </form>
+    <p>or use QuickVote&trade;</p>
     <div class="quickVote">
       <button class="button" data-vote="1">1</button>
       <button class="button" data-vote="2">2</button>
@@ -87,6 +90,7 @@
       <button class="button" data-vote="13">13</button>
       <button class="button" data-vote="21">21</button>
     </div>
+    <p>One all members have voted, your vote is then cast and displayed to your team.</p>
   </section>
 </template>
 
