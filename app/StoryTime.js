@@ -95,8 +95,12 @@ Teams = new Mongo.Collection('Teams');
 
   function findTeamYouAreCurrentlyEstimatingWith(){
     var team = Teams.findOne({
-      'inProgressEstimation.memberVotes.member.id': Meteor.userId(),
-      'inProgressEstimation.memberVotes.isParticipating': true
+      'inProgressEstimation.memberVotes': {
+        $elemMatch: {
+          'member.id': Meteor.userId(),
+          'isParticipating': true
+        }
+      }
     });
     if (team){
       // Add parent reference to make Meteor.calls easier
@@ -265,6 +269,12 @@ Meteor.methods({
       if (!team || !team.inProgressEstimation){
         console.log('Cannot cancel vote for teamId = ' + teamId + '. No team found or team not currently estimating. team = ', team)
         return false;
+      }
+
+      for (var i = 0; i < team.inProgressEstimation.memberVotes.length; i++){
+        if (team.inProgressEstimation.memberVotes[i].member.id == Meteor.userId()){
+          team.inProgressEstimation.memberVotes[i].currentVote.confirmed = false;
+        }
       }
 
       // TODO: Figure out why it works in Robomongo, but not in the app, even with the same exact query.

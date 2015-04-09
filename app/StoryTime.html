@@ -70,7 +70,11 @@
     <tbody>
       {{#each memberVotes}}
         <tr>
-          <td>{{member.name}}</td>
+          {{#if isParticipating}}
+            <td class="is-participating">{{member.name}}</td>
+          {{else}}
+            <td class="is-not-participating">{{member.name}}</td>
+          {{/if}}
           {{#each votes}}
             <td>{{value}}</td>
           {{/each}}
