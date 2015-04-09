@@ -1,4 +1,6 @@
 @import "config";
+@import "currentEstimation";
+
 @font-face {
   font-family: 'Open Sans';
   font-style: normal;
@@ -15,7 +17,6 @@
 $mainWidgetWidth: 30%;
 $mainWidgetMargin:#{(100% - ($mainWidgetWidth * 3)) / 4};
 body{
-  text-align: center;
   font-family: Open Sans;
   font-style: normal;
   font-size: 13px;
