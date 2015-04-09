@@ -1,9 +1,14 @@
 <head>
   <title>Story Time</title>
+  <link href='http://fonts.googleapis.com/css?family=Open+Sans:300,400' rel='stylesheet' type='text/css'>
 </head>
 
 <body>
-  {{> loginButtons}}
+  <header>
+    <h1 class="header">Story Time</h1>
+    {{> loginButtons}}
+  </header>
+ 
 
   {{#if currentUser}}
     {{#if currentEstimationTeam}}
