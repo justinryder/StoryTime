@@ -59,7 +59,7 @@
       <label for="link">Link</label>
       <input type="text" name="link" placeholder="Link" value="{{link}}"/>
     {{/with}}
-    <button type="submit" class="saveStory">Save</button>
+    <button type="submit" class="saveStory button">Save</button>
   </form>
 </template>
 
@@ -69,9 +69,9 @@
     <form class="votingForm">
       <input type="text" placeholder="Vote Here" name="vote" value="{{vote}}"/>
       {{#if yourCurrentVote.confirmed}}
-        <button type="submit">I Changed My Mind!</button>
+        <button type="submit" class="button">I Changed My Mind!</button>
       {{else}}
-        <button type="submit">Confirm</button>
+        <button type="submit" class="button">Confirm</button>
       {{/if}}
     </form>
   </section>
@@ -79,6 +79,15 @@
 
 <template name="estimationHistory">
   <section class="estimationHistory">
+    <h1>
+      <span>{{parent.name}}</span>
+      <span> - </span>
+      {{#if story.name}}
+        <span>{{story.name}}</span>
+      {{else}}
+        <span>New Story</span>
+      {{/if}}
+    </h1>
     {{#if allParticipantsHaveConfirmedTheirVotes}}
       <button class="showVotes">Show Votes</button>
     {{/if}}
