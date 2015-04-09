@@ -2,7 +2,16 @@
   label {
     text-transform: uppercase;
     font-weight: 400;
-    margin-top: 1%;
+    margin-bottom: 1%;
+  }
+
+  input,
+  textarea {
+    margin-bottom: 2%;
+  }
+
+  textarea {
+    resize: none;
   }
 
   label,
@@ -10,11 +19,10 @@
   textarea {
     display: block;
     width: 100%;
-    margin-bottom: 1%;
   }
 
   .saveStory {
     display: block;
-    margin: 2% auto 0;
+    margin: 4% auto 2%;
   }
 }

@@ -1,7 +1,7 @@
 .button {
   padding: .5em 2em;
   border: $borderWidth solid $borderColor;
-  border-radius: $borderRadius;
+  border-radius: 3px;
 
   background-color: $primaryColor;
   color: white;
@@ -9,4 +9,9 @@
   text-transform: uppercase;
   font-weight: 400;
   font-size: 11px;
+
+  &.secondary {
+    background-color: $backgroundColor;
+    color: lighten(black, 50%);
+  }
 }
