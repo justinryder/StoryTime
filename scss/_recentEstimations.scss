@@ -1,0 +1,9 @@
+.recentEstimations {
+  li {
+    padding-bottom: .5em;
+
+    &:last-child {
+      padding-bottom: 0;
+    }
+  }
+}

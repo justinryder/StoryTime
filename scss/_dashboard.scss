@@ -22,25 +22,20 @@ ul{
     text-align: center;
   }
 
-  .addNewTeamButton{
-    display: block;
-    margin-right: auto;
-    margin-left: auto;
-    padding: .5em;
-  }
-
   .input,
   select,
   .submitNewTeamButton,
-  .cancelButton{
-    margin-bottom: 2%;
+  .cancelButton,
+  .addNewTeamButton{
+    margin-bottom: 5%;
     display: block;
     margin-right: auto;
     margin-left: auto;
   }
 
   .submitNewTeamButton,
-  .cancelButton{
+  .cancelButton,
+  .addNewTeamButton{
     padding: .5em;
   }
 
