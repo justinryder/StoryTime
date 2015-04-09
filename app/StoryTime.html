@@ -5,9 +5,7 @@
 
 <body>
   <header>
-    {{#if currentUser}}
-      {{> loginButtons}}
-    {{/if}}
+    {{> loginButtons}}
   </header>
   <div class="content">
     {{#if currentUser}}
@@ -21,7 +19,9 @@
         {{> teams}}
       {{/if}}
     {{else}}
-      {{> loginButtons}}
+      <section class="signInPrompt widget">
+        <div>Please Sign In Above To Continue</div>
+      </section>
     {{/if}}
   </div>
 </body>
@@ -201,7 +201,7 @@
           <option value="Other">Other</option>
         </select>
         <button type="submit" class="submitNewTeamButton button">Create New Team</button>
-        <button class="cancelButton button secondary">Cancel</button>
+        <button type="button" class="cancelButton button secondary">Cancel</button>
       </form>
     {{else}}
       <h1>Teams</h1>
