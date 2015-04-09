@@ -52,7 +52,6 @@ Teams = new Mongo.Collection('Teams');
   function MemberVote(options){
     return {
       member: options.member,
-      isParticipating: false,
       votes: [],
       currentVote: options.currentVote || new Vote()
     };
@@ -62,6 +61,8 @@ Teams = new Mongo.Collection('Teams');
     options = options || {};
     return {
       value: options.value,
+      isParticipating: options.isParticipating || false,
+      agreed: options.agreed || false,
       confirmed: options.confirmed || false
     };
   }
@@ -87,7 +88,7 @@ Teams = new Mongo.Collection('Teams');
   function isCurrentUserParticipating(team){
     for (var i = 0; i < team.inProgressEstimation.members.length; i++){
       if (team.inProgressEstimation.members[i].id == Meteor.userId()){
-        return team.inProgressEstimation.members[i].isParticipating;
+        return team.inProgressEstimation.members[i].currentVote.isParticipating;
       }
     }
     return false;
@@ -98,7 +99,7 @@ Teams = new Mongo.Collection('Teams');
       'inProgressEstimation.memberVotes': {
         $elemMatch: {
           'member.id': Meteor.userId(),
-          'isParticipating': true
+          'currentVote.isParticipating': true
         }
       }
     });
@@ -199,7 +200,7 @@ Meteor.methods({
 
       Teams.update(
         { _id: teamId, 'inProgressEstimation.memberVotes.member.id': Meteor.userId() },
-        { $set: { 'inProgressEstimation.memberVotes.$.isParticipating': true } });
+        { $set: { 'inProgressEstimation.memberVotes.$.currentVote.isParticipating': true } });
       return true;
     },
     leaveEstimation: function(teamId){
@@ -213,10 +214,28 @@ Meteor.methods({
         return false;
       }
 
-
       Teams.update(
         { _id: teamId, 'inProgressEstimation.memberVotes.member.id': Meteor.userId() },
-        { $set: { 'inProgressEstimation.memberVotes.$.isParticipating': false } });
+        { $set: { 'inProgressEstimation.memberVotes.$.currentVote.isParticipating': false } });
+      return true;
+    },
+    finalizeEstimation: function(teamId){
+      if (!Meteor.user()){
+        return false;
+      }
+
+      var team = findTeam(teamId);
+      if (!team || !team.inProgressEstimation){
+        console.log('Cannot finalize estimation for teamId = ' + teamId + '. No team found or team not currently estimating. team = ', team)
+        return false;
+      }
+
+      team.completedEstimations.push(team.inProgressEstimation);
+      team.inProgressEstimation = null;
+
+      Teams.update(
+        { _id: teamId },
+        team);
       return true;
     },
     updateStory: function(teamId, story){
@@ -252,7 +271,8 @@ Meteor.methods({
 
       var newVote = new Vote({
         value: voteValue,
-        confirmed: true
+        confirmed: true,
+        isParticipating: true
       });
 
       Teams.update(
@@ -272,14 +292,34 @@ Meteor.methods({
       }
 
       var memberVotes = team.inProgressEstimation.memberVotes;
+      var firstVote = memberVotes[0].currentVote.value;
+      var membersAgree = true;
+      for (var i = 1; i < memberVotes.length; i++){
+        if (memberVotes[i].currentVote.value != firstVote){
+          membersAgree = false;
+          break;
+        }
+      }
+
+      var result;
       memberVotes.forEach(function(memberVote){
+        if (membersAgree){
+          memberVote.currentVote.agreed = true;
+          result = memberVote.currentVote.value;
+        }
+
         memberVote.votes.push(memberVote.currentVote);
-        memberVote.currentVote = new Vote();
+        memberVote.currentVote = new Vote({
+          isParticipating: memberVote.currentVote.isParticipating
+        });
       });
 
       Teams.update(
         { _id: teamId },
-        { $set: { 'inProgressEstimation.memberVotes': memberVotes } });
+        { $set: {
+          'inProgressEstimation.memberVotes': memberVotes,
+          'inProgressEstimation.result': result
+        } });
       return true;
     }
   // </votes>
@@ -341,7 +381,19 @@ if (Meteor.isClient) {
 
   // <Template.currentEstimation>
     Template.currentEstimation.helpers({
-
+      allParticipantsAgreedOnLastVote: function(){
+        var memberVotes = this.inProgressEstimation.memberVotes;
+        if (!memberVotes.length || !memberVotes[0].votes.length){
+          return false;
+        }
+        for (var i = 1; i < memberVotes.length; i++){
+          var vote = memberVotes[i].votes[memberVotes[i].votes.length - 1];
+          if (vote.isParticipating && !vote.agreed){
+            return false;
+          }
+        }
+        return true;
+      }
     });
 
     Template.currentEstimation.events({
@@ -359,6 +411,9 @@ if (Meteor.isClient) {
       },
       'click .startNewEstimationVote': function(event){
         Meteor.call('startNewEstimationVote', this._id);
+      },
+      'click .finalizeEstimation': function(event){
+        Meteor.call('finalizeEstimation', this._id);
       }
     });
   // </Template.currentEstimation>
@@ -376,7 +431,7 @@ if (Meteor.isClient) {
       },
       allParticipantsHaveConfirmedTheirVotes: function(){
         for (var i = 0; i < this.memberVotes.length; i++){
-          if (this.memberVotes[i].isParticipating && !this.memberVotes[i].currentVote.confirmed){
+          if (this.memberVotes[i].currentVote.isParticipating && !this.memberVotes[i].currentVote.confirmed){
             return false;
           }
         }

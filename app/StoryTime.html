@@ -41,6 +41,9 @@
     {{> votingWidget}}
     {{> estimationHistory}}
   {{/with}}
+  {{#if allParticipantsAgreedOnLastVote}}
+    <button class="finalizeEstimation">Finalize Estimation</button>
+  {{/if}}
   <button class="leaveEstimation">Leave Estimation</button>
 </template>
 
@@ -72,7 +75,7 @@
     <tbody>
       {{#each memberVotes}}
         <tr>
-          {{#if isParticipating}}
+          {{#if currentVote.isParticipating}}
             <td class="is-participating">{{member.name}}</td>
           {{else}}
             <td class="is-not-participating">{{member.name}}</td>
