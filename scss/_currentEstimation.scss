@@ -15,38 +15,6 @@
 
 .estimationHistory {
   width: 98%;
-
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    border-spacing: 0;
-
-    td {
-      border: 1px solid black;
-      
-      &:first-child {
-        width: 50%;
-
-        border-left: none;
-      }
-
-      &:last-child {
-        border-right: none;
-      }
-    }
-
-    thead td {
-      border-top: none;
-    }
-
-    tbody tr:last-child td {
-      border-bottom: none;
-    }
-
-    td:not(:first-child) {
-      text-align: center;
-    }
-  }
 }
 
 .storyForm {
