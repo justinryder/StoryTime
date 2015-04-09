@@ -1,5 +1,5 @@
 .input {
-  border: 1px solid $borderColor;
+  border: $borderWidth solid darken($borderColor, 15%);
   border-radius: $borderRadius;
   background-color: $backgroundColor;
   padding: 1%;
