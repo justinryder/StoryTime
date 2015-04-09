@@ -194,7 +194,9 @@
           {{#each yourTeams}}
             <li>
               <span>{{name}}</span>
-              <button class="leaveTeam hyperlink">Leave</button>
+              {{#unless inProgressEstimation}}
+                <button class="leaveTeam hyperlink">Leave</button>
+              {{/unless}}
             </li>
           {{/each}}
         </ul>
@@ -206,7 +208,9 @@
           {{#each otherTeams}}
             <li>
               <span>{{name}}</span>
-              <button class="joinTeam hyperlink">Join</button>
+              {{#unless inProgressEstimation}}
+                <button class="joinTeam hyperlink">Join</button>
+              {{/unless}}
             </li>
           {{/each}}
         </ul>
