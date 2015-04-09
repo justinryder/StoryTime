@@ -260,29 +260,6 @@ Meteor.methods({
         { $set: { 'inProgressEstimation.memberVotes.$.currentVote': newVote } });
       return true;
     },
-    cancelVote: function(teamId){
-      if (!Meteor.user()){
-        return false;
-      }
-
-      var team = findTeam(teamId);
-      if (!team || !team.inProgressEstimation){
-        console.log('Cannot cancel vote for teamId = ' + teamId + '. No team found or team not currently estimating. team = ', team)
-        return false;
-      }
-
-      for (var i = 0; i < team.inProgressEstimation.memberVotes.length; i++){
-        if (team.inProgressEstimation.memberVotes[i].member.id == Meteor.userId()){
-          team.inProgressEstimation.memberVotes[i].currentVote.confirmed = false;
-        }
-      }
-
-      // TODO: Figure out why it works in Robomongo, but not in the app, even with the same exact query.
-      Teams.update(
-        { _id: teamId, 'inProgressEstimation.memberVotes.member.id': Meteor.userId() },
-        { $set: { 'inProgressEstimation.memberVotes.$.currentVote.confirmed': false } });
-      return true;
-    },
     showVotes: function(teamId){
       if (!Meteor.user()){
         return false;
@@ -356,10 +333,8 @@ if (Meteor.isClient) {
     Template.votingWidget.events({
       'submit .votingForm': function(event){
         Meteor.call('confirmVote', this.parent._id, event.target.vote.value);
+        event.target.vote.value = null;
         return false;
-      },
-      'click .cancelCurrentVote': function(event){
-        Meteor.call('cancelVote', this.parent._id);
       }
     });
   // </Template.votingWidget>

@@ -50,7 +50,7 @@
     <form class="votingForm">
       <input type="text" placeholder="Vote Here" name="vote" value="{{vote}}"/>
       {{#if yourCurrentVote.confirmed}}
-        <button class="cancelCurrentVote">I Changed My Mind!</button>
+        <button type="submit">I Changed My Mind!</button>
       {{else}}
         <button type="submit">Confirm</button>
       {{/if}}
