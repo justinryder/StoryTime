@@ -339,7 +339,7 @@ Meteor.methods({
     }
   }
 
-  var isAddingNewItem = _sessionGetSetFactory('isAddingNewTeam');
+  var isAddingNewTeam = _sessionGetSetFactory('isAddingNewTeam');
 // </session data>
 
 if (Meteor.isClient) {
@@ -507,7 +507,7 @@ if (Meteor.isClient) {
   // <Template.teams>
     Template.teams.helpers({
       isAddingNewTeam: function(){
-        return isAddingNewItem();
+        return isAddingNewTeam();
       },
       yourTeams: function(){
         return Teams.find({ members: { $elemMatch: { id: Meteor.userId() } } });
@@ -528,10 +528,10 @@ if (Meteor.isClient) {
 
     Template.teams.events({
       'click .addNewTeamButton': function(event){
-        isAddingNewItem(true);
+        isAddingNewTeam(true);
       },
       'click .addNewTeamForm .cancelButton': function(event){
-        isAddingNewItem(false);
+        isAddingNewTeam(false);
       },
       'submit .addNewTeamForm': function(event){
         var team = new Team({
@@ -540,7 +540,7 @@ if (Meteor.isClient) {
           estimationUnits: event.target.estimationUnits.value
         });
         Meteor.call('addNewTeam', team);
-        isAddingNewItem(false);
+        isAddingNewTeam(false);
         return false;
       },
       'click .joinTeam': function(event){

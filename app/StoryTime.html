@@ -189,21 +189,25 @@
   </section>
 </template>
 
+<template name="teams_edit">
+  <form class="addNewTeamForm">
+    <h1>Add New team</h1>
+    <input required class="input" type="text" name="name" placeholder="Name"/>
+    <input class="input" type="text" name="description" placeholder="Description"/>
+    <select required name="estimationUnits">
+      <option value="Story Points">Story Points</option>
+      <option value="Hours">Hours</option>
+      <option value="Other">Other</option>
+    </select>
+    <button type="submit" class="submitNewTeamButton button">Create New Team</button>
+    <button type="button" class="cancelButton button secondary">Cancel</button>
+  </form>
+</template>
+
 <template name="teams">
   <section class="teams widget">
     {{#if isAddingNewTeam}}
-      <form class="addNewTeamForm">
-        <h1>Add New team</h1>
-        <input required class="input" type="text" name="name" placeholder="Name"/>
-        <input class="input" type="text" name="description" placeholder="Description"/>
-        <select required name="estimationUnits">
-          <option value="Story Points">Story Points</option>
-          <option value="Hours">Hours</option>
-          <option value="Other">Other</option>
-        </select>
-        <button type="submit" class="submitNewTeamButton button">Create New Team</button>
-        <button type="button" class="cancelButton button secondary">Cancel</button>
-      </form>
+      {{> teams_edit}}
     {{else}}
       <h1>Teams</h1>
       <section class="yourTeams">
