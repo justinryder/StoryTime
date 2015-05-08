@@ -189,25 +189,33 @@
   </section>
 </template>
 
-<template name="teams_edit">
-  <form class="addNewTeamForm">
-    <h1>Add New team</h1>
-    <input required class="input" type="text" name="name" placeholder="Name"/>
-    <input class="input" type="text" name="description" placeholder="Description"/>
-    <select required name="estimationUnits">
-      <option value="Story Points">Story Points</option>
-      <option value="Hours">Hours</option>
-      <option value="Other">Other</option>
-    </select>
-    <button type="submit" class="submitNewTeamButton button">Create New Team</button>
-    <button type="button" class="cancelButton button secondary">Cancel</button>
-  </form>
+<template name="team_edit">
+  {{#with editingTeam}}
+    <form class="editTeamForm">
+      <h1>Add New team</h1>
+      <input required class="input" type="text" name="name" placeholder="Name" value="{{name}}"/>
+      <input class="input" type="text" name="description" placeholder="Description" value="{{description}}"/>
+      <select required name="estimationUnits">
+        <option value="Story Points">Story Points</option>
+        <option value="Hours">Hours</option>
+        <option value="Other">Other</option>
+      </select>
+      <button type="submit" class="submitNewTeamButton button">
+        {{#if isEditingTeam}}
+          Save Team
+        {{else}}
+          Create Team
+        {{/if}}
+      </button>
+      <button type="button" class="cancelButton button secondary">Cancel</button>
+    </form> 
+  {{/with}}
 </template>
 
 <template name="teams">
   <section class="teams widget">
-    {{#if isAddingNewTeam}}
-      {{> teams_edit}}
+    {{#if isEditingTeam}}
+      {{> team_edit}}
     {{else}}
       <h1>Teams</h1>
       <section class="yourTeams">
@@ -216,6 +224,7 @@
           {{#each yourTeams}}
             <li>
               <span>{{name}}</span>
+              <button class="editTeam hyperlink">Edit</button>
               {{#unless inProgressEstimation}}
                 <button class="leaveTeam hyperlink">Leave</button>
               {{/unless}}

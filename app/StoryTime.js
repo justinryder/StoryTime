@@ -134,6 +134,20 @@ Meteor.methods({
       Teams.insert(newTeam);
       return true;
     },
+    updateTeam: function(team){
+      if (!Meteor.user()){
+        return false;
+      }
+
+      Teams.update(
+        { _id: team._id },
+        { $set: {
+          name: team.name,
+          description: team.description,
+          estimationUnits: team.estimationUnits
+        } });
+      return true;
+    },
     joinTeam: function(teamId){
       if (!Meteor.user()){
         return false;
@@ -340,6 +354,7 @@ Meteor.methods({
   }
 
   var isAddingNewTeam = _sessionGetSetFactory('isAddingNewTeam');
+  var editingTeam = _sessionGetSetFactory('editingTeam');
 // </session data>
 
 if (Meteor.isClient) {
@@ -504,10 +519,21 @@ if (Meteor.isClient) {
     });
   // </Tempalte.recentEstimations>
 
+  // <Template.team_edit>
+    Template.team_edit.helpers({
+      editingTeam: function(){
+        return editingTeam() || new Team();
+      },
+      isEditingTeam: function(){
+        return editingTeam();
+      }
+    });
+  // </Template.team_edit>
+
   // <Template.teams>
     Template.teams.helpers({
-      isAddingNewTeam: function(){
-        return isAddingNewTeam();
+      isEditingTeam: function(){
+        return isAddingNewTeam() || editingTeam();
       },
       yourTeams: function(){
         return Teams.find({ members: { $elemMatch: { id: Meteor.userId() } } });
@@ -530,18 +556,31 @@ if (Meteor.isClient) {
       'click .addNewTeamButton': function(event){
         isAddingNewTeam(true);
       },
-      'click .addNewTeamForm .cancelButton': function(event){
+      'click .editTeamForm .cancelButton': function(event){
         isAddingNewTeam(false);
+        editingTeam(null);
       },
-      'submit .addNewTeamForm': function(event){
+      'submit .editTeamForm': function(event){
         var team = new Team({
           name: event.target.name.value,
           description : event.target.description.value,
           estimationUnits: event.target.estimationUnits.value
         });
-        Meteor.call('addNewTeam', team);
-        isAddingNewTeam(false);
+
+        if (editingTeam()) {
+          team._id = editingTeam()._id;
+          Meteor.call('updateTeam', team);
+          editingTeam(null);
+        }
+        else {
+          Meteor.call('addNewTeam', team);
+          isAddingNewTeam(false);
+        }
+
         return false;
+      },
+      'click .editTeam': function(event){
+        editingTeam(this);
       },
       'click .joinTeam': function(event){
         Meteor.call('joinTeam', this._id);
