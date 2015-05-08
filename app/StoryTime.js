@@ -402,15 +402,19 @@ if (Meteor.isClient) {
     Template.currentEstimation.helpers({
       allParticipantsAgreedOnLastVote: function(){
         var memberVotes = this.inProgressEstimation.memberVotes;
+
         if (!memberVotes.length || !memberVotes[0].votes.length){
           return false;
         }
+
         for (var i = 1; i < memberVotes.length; i++){
           var vote = memberVotes[i].votes[memberVotes[i].votes.length - 1];
-          if (vote.isParticipating && !vote.agreed){
+
+          if (!vote.agreed){
             return false;
           }
         }
+
         return true;
       }
     });
@@ -515,7 +519,7 @@ if (Meteor.isClient) {
     });
 
     Template.recentEstimations.events({
-      
+
     });
   // </Tempalte.recentEstimations>
 
